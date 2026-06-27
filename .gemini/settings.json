@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "AfterTool": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "role-router-output-guard",
+            "type": "command",
+            "command": "node \"$GEMINI_PROJECT_DIR/.gemini/hooks/output-guard.mjs\"",
+            "timeout": 15000,
+            "description": "Shared role-router Output Guard: scans tool results for prompt injection and credential leakage; redacts credentials."
+          }
+        ]
+      }
+    ],
+    "BeforeAgent": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "role-router-dispatch-plan",
+            "type": "command",
+            "command": "node \"$GEMINI_PROJECT_DIR/.gemini/hooks/dispatch-plan.mjs\"",
+            "timeout": 15000,
+            "description": "Injects the role-router dispatch plan (task classification + suggested role chain) into CO's context."
+          }
+        ]
+      }
+    ]
+  }
+}

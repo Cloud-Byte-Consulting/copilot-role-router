@@ -1,0 +1,79 @@
+{
+  "taskTypes": {
+    "bug_fix": {
+      "description": "Debug and fix an issue or bug",
+      "keywords": ["bug", "fix", "broken", "error", "crash", "fails", "issue"],
+      "agents": ["recon", "medic", "qa"],
+      "parallel": true,
+      "instructions": "Recon investigates the issue, Medic diagnoses and plans the fix, QA verifies. Results flow to Engineer for implementation."
+    },
+    "feature_implementation": {
+      "description": "Implement a new feature or enhancement",
+      "keywords": ["feature", "implement", "build", "add", "create new", "enhancement"],
+      "agents": ["recon", "engineer", "qa"],
+      "parallel": true,
+      "instructions": "Recon explores requirements and existing codebase, Engineer implements, QA verifies. Results inform CO decisions."
+    },
+    "documentation": {
+      "description": "Write or update documentation",
+      "keywords": ["doc", "documentation", "readme", "guide", "tutorial", "howto"],
+      "agents": ["scribe"],
+      "parallel": false,
+      "instructions": "Scribe writes clear, factual documentation with proper citations."
+    },
+    "code_review": {
+      "description": "Review code changes for quality and correctness",
+      "keywords": ["review", "audit", "check code", "verify logic", "security review"],
+      "agents": ["code-review"],
+      "parallel": false,
+      "instructions": "Code-review agent analyzes the diff and surfaces issues."
+    },
+    "research": {
+      "description": "Research a topic or gather information",
+      "keywords": ["research", "investigate", "explore", "analyze", "find out", "what is"],
+      "agents": ["recon"],
+      "parallel": false,
+      "instructions": "Recon produces a structured report with findings and evidence."
+    },
+    "performance": {
+      "description": "Debug and optimize performance issues",
+      "keywords": ["slow", "performance", "optimize", "latency", "throughput", "bottleneck"],
+      "agents": ["recon", "medic", "qa"],
+      "parallel": true,
+      "instructions": "Recon profiles and identifies bottleneck, Medic proposes optimization, QA verifies improvement."
+    },
+    "security": {
+      "description": "Identify and fix security vulnerabilities",
+      "keywords": ["security", "vulnerability", "exploit", "breach", "inject", "auth", "sanitize"],
+      "agents": ["recon", "medic", "qa"],
+      "parallel": true,
+      "instructions": "Recon scans for vulns, Medic plans remediation, QA verifies fix. Escalate to CO before deployment."
+    },
+    "deployment": {
+      "description": "Deploy changes to production or staging",
+      "keywords": ["deploy", "push to prod", "release", "ship", "go live"],
+      "agents": ["qa", "judge"],
+      "parallel": false,
+      "instructions": "QA verifies readiness, Judge rules on safety. CO must approve before deployment."
+    },
+    "testing": {
+      "description": "Write tests or verify test coverage",
+      "keywords": ["test", "unit test", "e2e", "integration", "coverage", "qa test"],
+      "agents": ["engineer", "qa"],
+      "parallel": true,
+      "instructions": "Engineer writes tests, QA verifies coverage and test quality."
+    },
+    "refactoring": {
+      "description": "Refactor code for maintainability or performance",
+      "keywords": ["refactor", "clean up", "simplify", "extract", "modularize"],
+      "agents": ["recon", "engineer", "qa"],
+      "parallel": true,
+      "instructions": "Recon maps current structure, Engineer refactors, QA confirms no regressions."
+    }
+  },
+  "defaults": {
+    "fallbackAgents": ["recon"],
+    "fallbackDescription": "Generic investigation",
+    "confidenceThreshold": 0.6
+  }
+}

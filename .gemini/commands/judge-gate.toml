@@ -1,0 +1,16 @@
+description = "Run the role-router Judge verification gate on the most recent completed work"
+
+prompt = """
+Run the role-router Judge verification gate now.
+
+1. Identify the user's ORIGINAL intent for the task just completed and summarize the work
+   that was done.
+2. Open the verification:
+   !{node core/cli.mjs judge-open --intent "<original intent>" --work "<work summary>"}
+   (substitute the real intent/work — quote them carefully).
+3. Adopt the Judge role (read-only): inspect the real artifacts — diff, changed files,
+   test output — and build a structured verdict with concrete evidence citations.
+4. Finalize: node core/cli.mjs judge-finalize --id <verificationId> --json "<verdict JSON>"
+5. OBEY the printed hill-climb directive (CONTINUE_REFINE / STOP_BUDGET / STOP_PLATEAU /
+   STOP_REVIEW / STOP_ACCEPT) exactly as described in AGENTS.md.
+"""

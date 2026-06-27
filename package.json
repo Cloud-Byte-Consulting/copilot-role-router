@@ -1,0 +1,27 @@
+{
+  "name": "copilot-role-router",
+  "version": "1.4.0",
+  "description": "Multi-role agent orchestrator for GitHub Copilot, Claude Code, Gemini CLI / Antigravity, and Cursor. CO is the sole entry point; delegates to Recon, Medic, Engineer, QA, Scribe, and Judge.",
+  "type": "module",
+  "main": "core/roles.mjs",
+  "bin": {
+    "role-router": "core/cli.mjs"
+  },
+  "exports": {
+    ".": "./core/roles.mjs",
+    "./cli": "./core/cli.mjs",
+    "./roles": "./core/roles.mjs",
+    "./dispatcher": "./core/agent-dispatcher.mjs",
+    "./actions": "./core/repeatable-actions.mjs",
+    "./core/*": "./core/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "generate-agents": "node scripts/generate-agents.mjs",
+    "test": "node --test",
+    "dev": "bun build .github/extensions/role-router/src/extension.mjs --outfile .github/extensions/role-router/extension.mjs --target node --format esm --external @github/copilot-sdk --define '__VERSION__=\"dev\"' --watch",
+    "bump": "node scripts/bump.mjs",
+    "release": "node scripts/build.mjs && git add .github/extensions/role-router/extension.mjs && git diff --staged --quiet || git commit -m \"chore: build v$(node -p \\\"require('./package.json').version\\\")\" && git tag v$(node -p \"require('./package.json').version\") && git push origin main --tags"
+  }
+}

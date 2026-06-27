@@ -1,0 +1,10 @@
+description = "List the role-router role registry (models, reasoning effort, tool policies)"
+
+prompt = """
+Show the role-router role registry to the user:
+
+!{node core/cli.mjs roles}
+
+Briefly explain that CO is the sole user-facing role and the others are delegated to
+internally per AGENTS.md.
+"""

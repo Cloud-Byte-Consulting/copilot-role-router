@@ -1,0 +1,9 @@
+node_modules/
+*.log
+.github/extensions/role-router/state.json
+
+# role-router runtime state (judge verifications, hill-climb budget, guard log)
+.role-router/
+
+# Cursor local runtime state
+.cursor/hooks/state/

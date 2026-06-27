@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Verify generated agents
+        run: |
+          node scripts/generate-agents.mjs
+          git diff --exit-code -- .claude/agents .cursor/agents
+
+      - name: Build extension
+        run: node scripts/build.mjs
+
+      - name: Verify output
+        run: |
+          test -f .github/extensions/role-router/extension.mjs \
+            && echo "✓ extension.mjs exists"
+          grep -q 'var VERSION' .github/extensions/role-router/extension.mjs \
+            && echo "✓ VERSION baked in"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: role-router-${{ github.sha }}
+          path: .github/extensions/role-router/extension.mjs
+          retention-days: 7
+
+  notify-failure:
+    needs: [build]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure ci:run-failure label exists
+        run: |
+          gh label create "ci:run-failure" \
+            --repo "${{ github.repository }}" \
+            --description "Automated: pipeline run failure" \
+            --color "d93f0b" \
+            --force 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or update failure issue
+        run: |
+          WORKFLOW="${{ github.workflow }}"
+          BRANCH="${{ github.ref_name }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          EXISTING=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --state open \
+            --label "ci:run-failure" \
+            --json number,title \
+            | jq --arg w "$WORKFLOW" --arg b "$BRANCH" \
+              '[.[] | select(.title | contains($w + " on " + $b))] | .[0].number // empty' \
+            | tr -d '"')
+
+          if [ -n "$EXISTING" ]; then
+            echo "Existing open issue #$EXISTING — adding recurrence comment"
+            gh issue comment "$EXISTING" \
+              --repo "${{ github.repository }}" \
+              --body "## 🔁 Recurrence
+
+          **Run:** ${RUN_URL}
+          **Commit:** \`${{ github.sha }}\`
+          **Actor:** @${{ github.actor }}
+          **Time:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          > Same workflow/branch is still failing. Tracking on this issue."
+          else
+            gh issue create \
+              --repo "${{ github.repository }}" \
+              --title "🔴 CI failure: ${WORKFLOW} on ${BRANCH}" \
+              --label "ci:run-failure" \
+              --body "## CI Failure
+
+          **Workflow:** \`${WORKFLOW}\`
+          **Run:** ${RUN_URL}
+          **Branch:** \`${BRANCH}\`
+          **Commit:** \`${{ github.sha }}\`
+          **Triggered by:** \`${{ github.event_name }}\`
+          **Actor:** @${{ github.actor }}
+
+          ## Next steps
+          1. [View the failed run and logs](${RUN_URL})
+          2. Check the failing job/step for the error details
+          3. Fix and push — close this issue once CI is green
+
+          > Auto-created by the CI failure notifier."
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

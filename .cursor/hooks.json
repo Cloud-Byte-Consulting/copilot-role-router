@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "node .cursor/hooks/output-guard.mjs",
+        "timeout": 15
+      }
+    ]
+  }
+}
