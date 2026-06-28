@@ -8,6 +8,13 @@
 
 A multi-role agent orchestrator for **GitHub Copilot, Claude Code, Gemini CLI / Google Antigravity, and Cursor**. **CO** (Commanding Officer) is the only user-facing entry point; it transparently delegates work to specialized roles (Recon, Medic, Engineer, QA, Scribe, Judge) and enforces decision gates.
 
+## Part of the Governed Agentic Platform
+
+This repo is the **archived engine prototype** — the Judge gate + hill-climb loop that seeded the Open Engine consolidation (AIR + Omnigent), one governed platform where the LLM proposes and OPA decides. It is read-only; new work lives in the successor.
+
+- **[omnigent](https://github.com/Cloud-Byte-Consulting/omnigent)** — the successor: orchestration moved to [`examples/role_router/config.yaml`](https://github.com/Cloud-Byte-Consulting/omnigent), the two-tier Judge became a skill, and the hill-climb budget became a nessie policy.
+- **[agentic-harness](https://github.com/Cloud-Byte-Consulting/agentic-harness)** — the platform hub; start at [the platform getting-started guide](https://github.com/Cloud-Byte-Consulting/agentic-harness/blob/main/GETTING_STARTED.md).
+
 ## Supported harnesses
 
 The harness-agnostic logic (role registry, task classifier, judge verdict pipeline, hill-climb budget, output guard) lives in [`core/`](./core) with a portable CLI (`core/cli.mjs`), so every harness runs the **same code-enforced gates** — only the packaging differs:
